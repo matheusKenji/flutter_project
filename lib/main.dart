@@ -33,13 +33,28 @@ class _MyAppState extends State<MyApp> {
     },
     {
       'questionText': 'Who\'s your favorite instructor?',
-      'answers': ['Max', 'Max', 'Max', 'Max']
+      'answers': [
+        {'text': 'Max', 'score': 1},
+        {'text': 'Max', 'score': 1},
+        {'text': 'Max', 'score': 1},
+        {'text': 'Max', 'score': 1}
+      ]
     }
   ];
 
   var _questionIndex = 0;
+  var _totalScore = 0;
 
-  void _answerQuestion() {
+  void _resetQuiz() {
+    setState(() {
+      _questionIndex = 0;
+      _totalScore = 0;
+    });
+  }
+
+  void _answerQuestion(int score) {
+    _totalScore += score;
+
     setState(() {
       _questionIndex = _questionIndex + 1;
     });
@@ -50,15 +65,16 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-          appBar: AppBar(
-            title: Text('My First App'),
-          ),
-          body: _questionIndex < _questions.length
-              ? Quiz(
-                  answerQuestion: _answerQuestion,
-                  questionIndex: _questionIndex,
-                  questions: _questions)
-              : Result()),
+        appBar: AppBar(
+          title: Text('My First App'),
+        ),
+        body: _questionIndex < _questions.length
+            ? Quiz(
+                answerQuestion: _answerQuestion,
+                questionIndex: _questionIndex,
+                questions: _questions)
+            : Result(_totalScore, _resetQuiz),
+      ),
     );
   }
 }
